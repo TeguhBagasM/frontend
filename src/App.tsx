@@ -7,8 +7,8 @@ import DataMaster from './pages/admin/DataMaster'
 import HasilSeleksi from './pages/admin/HasilSeleksi'
 import Settings from './pages/admin/Settings'
 import Beasiswa from './pages/applicant/Beasiswa'
-import WizardPendaftaran from './pages/applicant/WizardPendaftaran'
-import MonitoringStatus from './pages/applicant/MonitoringStatus'
+import WizardPendaftaranPage from './pages/applicant/WizardPendaftaranPage'
+import MonitoringStatusPage from './pages/applicant/MonitoringStatusPage'
 import BeasiswaDetailPage from './pages/public/BeasiswaDetailPage'
 import LandingPage from './pages/public/LandingPage'
 import LoginPage from './pages/public/LoginPage'
@@ -31,8 +31,9 @@ const router = createBrowserRouter([
     element: <ProtectedRoute allowedRoles={[ROLES.CALON_PESERTA]} />,
     children: [
       { path: '/applicant/beasiswa', element: <Beasiswa /> },
-      { path: '/applicant/pendaftaran', element: <WizardPendaftaran /> },
-      { path: '/applicant/status', element: <MonitoringStatus /> },
+      { path: '/applicant/pendaftaran', element: <WizardPendaftaranPage /> },
+      { path: '/applicant/pendaftaran/:id', element: <WizardPendaftaranPage /> },
+      { path: '/applicant/status', element: <MonitoringStatusPage /> },
     ],
   },
   {

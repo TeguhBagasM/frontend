@@ -33,7 +33,11 @@ function BeasiswaCard({ beasiswa, isLoggedIn }: { beasiswa: Beasiswa; isLoggedIn
           Lihat Detail
         </Link>
         <Link
-          to={isLoggedIn ? '/applicant/pendaftaran' : '/register'}
+          to={
+            isLoggedIn
+              ? { pathname: '/applicant/pendaftaran', search: `?beasiswaId=${beasiswa.id}` }
+              : '/register'
+          }
           className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-blue-700"
         >
           Daftar Sekarang

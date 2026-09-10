@@ -137,7 +137,11 @@ export default function BeasiswaDetailPage() {
 
         <div className="mt-8 flex justify-center">
           <Link
-            to={isLoggedIn ? '/applicant/pendaftaran' : '/register'}
+            to={
+              isLoggedIn
+                ? { pathname: '/applicant/pendaftaran', search: `?beasiswaId=${beasiswa.id}` }
+                : '/register'
+            }
             className="rounded-lg bg-blue-600 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700"
           >
             Daftar Beasiswa Ini
