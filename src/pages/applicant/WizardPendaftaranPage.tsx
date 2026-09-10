@@ -109,7 +109,12 @@ export default function WizardPendaftaranPage() {
     resolver: zodResolver(latarBelakangSchema),
   })
 
-  async function resolveExistingDraft(targetBeasiswaId: number) {
+  async function resolveExistingDraft(targetBeasiswaId: number, knownId?: number) {
+    // Backend kini mengembalikan id draft konflik di body 409 — pakai langsung.
+    if (knownId) {
+      navigate(`/applicant/pendaftaran/${knownId}`, { replace: true })
+      return
+    }
     try {
       const mine = await getMyPendaftaran()
       const existing = mine.find(
@@ -125,10 +130,10 @@ export default function WizardPendaftaranPage() {
     setDuplicateMessage('Anda sudah punya pendaftaran aktif untuk beasiswa ini.')
   }
 
-  // 409 tidak mengembalikan id draft konflik (AppError hanya { status, message }),
-  // jadi kalau kena DuplicateDraftError kita coba cari id pendaftaran aktif
-  // yang masih bisa diedit lewat getMyPendaftaran, lalu redirect otomatis.
-  // Kalau tidak ketemu, tampilkan pesan fallback + tautan monitoring.
+  // 409 mengembalikan id draft konflik di body (`data.pendaftaranId`) —
+  // redirect langsung ke draft tsb. Fallback bila id tak tersedia: cari id
+  // pendaftaran aktif yang masih bisa diedit lewat getMyPendaftaran. Kalau
+  // tidak ketemu, tampilkan pesan fallback + tautan monitoring.
   useEffect(() => {
     if (!isNew) return
     if (createStarted.current) return
@@ -141,7 +146,7 @@ export default function WizardPendaftaranPage() {
       })
       .catch((err: unknown) => {
         if (err instanceof DuplicateDraftError) {
-          resolveExistingDraft(beasiswaId)
+          resolveExistingDraft(beasiswaId, err.pendaftaranId)
         } else {
           setCreateError(getErrorMessage(err, 'Gagal membuat pendaftaran.'))
         }

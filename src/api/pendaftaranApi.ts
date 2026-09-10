@@ -28,9 +28,14 @@ const BASE = '/api/transaksi'
  *  Komponen catch ini untuk redirect ke detail draft yang sudah ada,
  *  bukan cuma menampilkan pesan error generik. */
 export class DuplicateDraftError extends Error {
-  constructor(message: string) {
+  /** Id draft konflik dari body 409 (`data.pendaftaranId`) — dipakai redirect
+   *  langsung ke draft yang sudah ada. Undefined bila backend lawas. */
+  readonly pendaftaranId?: number
+
+  constructor(message: string, pendaftaranId?: number) {
     super(message)
     this.name = 'DuplicateDraftError'
+    this.pendaftaranId = pendaftaranId
   }
 }
 
@@ -70,8 +75,12 @@ export async function createDraft(beasiswaId: number): Promise<CreateDraftResult
     return data.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 409) {
+      const body = error.response.data as
+        | { success?: boolean; message?: string; data?: { pendaftaranId?: number } }
+        | undefined
       throw new DuplicateDraftError(
         extractErrorMessage(error, 'Anda sudah memiliki pendaftaran aktif untuk beasiswa ini.'),
+        body?.data?.pendaftaranId,
       )
     }
     if (axios.isAxiosError(error) && error.response?.status === 400) {
