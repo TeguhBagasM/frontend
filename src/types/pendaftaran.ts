@@ -105,13 +105,13 @@ export type PendaftaranListResult = {
 }
 
 export type DashboardStatistik = {
-  totalPendaftar: number
-  lulusAdmin: number
-  tidakLulusAdmin: number
-  lulusWawancara: number
-  tidakLulusWawancara: number
-  dalamProsesAdmin: number
-  dalamProsesWawancara: number
+  total_pendaftar: number
+  lulus_admin: number
+  tidak_lulus_admin: number
+  lulus_wawancara: number
+  tidak_lulus_wawancara: number
+  dalam_proses_admin: number
+  dalam_proses_wawancara: number
 }
 
 export type VerifikasiKeputusanResult = Pendaftaran & {

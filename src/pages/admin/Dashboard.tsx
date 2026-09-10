@@ -37,17 +37,20 @@ export default function Dashboard() {
       const hasilFinal = await getHasilFinal();
 
       // Transform data for Excel export
-      const exportData: ExportData[] = hasilFinal.map(item => ({
-        id: item.id,
-        nama: item.dataDiri?.nama || "-",
-        nik: item.dataDiri?.nik || "-",
-        email: item.dataDiri?.email || "-",
-        noHp1: item.dataDiri?.noHp1 || "-",
-        beasiswaNama: item.beasiswaNama || "-",
-        status: item.status,
-        nilaiWawancara: item.wawancaraTerbaru?.nilai || null,
-        catatanWawancara: item.wawancaraTerbaru?.catatan || null,
-      }));
+      const exportData: ExportData[] = hasilFinal.map((item) => {
+        const wawancaraTerbaru = item.wawancaraTerbaru ?? item.wawancara?.[0] ?? null;
+        return {
+          id: item.id,
+          nama: item.dataDiri?.nama || "-",
+          nik: item.dataDiri?.nik || "-",
+          email: item.dataDiri?.email || "-",
+          noHp1: item.dataDiri?.noHp1 || "-",
+          beasiswaNama: item.beasiswaNama || "-",
+          status: item.status,
+          nilaiWawancara: wawancaraTerbaru?.nilai ?? null,
+          catatanWawancara: wawancaraTerbaru?.catatan ?? null,
+        };
+      });
 
       // Create worksheet
       const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -73,13 +76,13 @@ export default function Dashboard() {
 
         // Convert to chart-friendly format
         const chartData: StatistikChartData[] = [
-          { name: "Total Pendaftar", value: data.totalPendaftar },
-          { name: "Lulus Admin", value: data.lulusAdmin },
-          { name: "Tidak Lulus Admin", value: data.tidakLulusAdmin },
-          { name: "Lulus Wawancara", value: data.lulusWawancara },
-          { name: "Tidak Lulus Wawancara", value: data.tidakLulusWawancara },
-          { name: "Dalam Proses Admin", value: data.dalamProsesAdmin },
-          { name: "Dalam Proses Wawancara", value: data.dalamProsesWawancara },
+          { name: "Total Pendaftar", value: data.total_pendaftar },
+          { name: "Lulus Admin", value: data.lulus_admin },
+          { name: "Tidak Lulus Admin", value: data.tidak_lulus_admin },
+          { name: "Lulus Wawancara", value: data.lulus_wawancara },
+          { name: "Tidak Lulus Wawancara", value: data.tidak_lulus_wawancara },
+          { name: "Dalam Proses Admin", value: data.dalam_proses_admin },
+          { name: "Dalam Proses Wawancara", value: data.dalam_proses_wawancara },
         ];
 
         setStatistik(chartData);
